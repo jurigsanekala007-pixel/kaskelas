@@ -1,3 +1,5 @@
+import java.io.File
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
@@ -12,6 +14,20 @@ ksp {
 android {
     namespace = "id.kaskelas.kas"
     compileSdk = 36
+
+    signingConfigs {
+        create("release") {
+            // Keystore TIDAK ada di repo (gitignored). Set env vars sebelum build:
+            //   KAS_STORE_FILE, KAS_STORE_PASSWORD, KAS_KEY_ALIAS, KAS_KEY_PASSWORD
+            val storeFilePath: String? = System.getenv("KAS_STORE_FILE")
+            if (storeFilePath != null) {
+                storeFile = File(storeFilePath)
+                storePassword = System.getenv("KAS_STORE_PASSWORD")
+                keyAlias = System.getenv("KAS_KEY_ALIAS")
+                keyPassword = System.getenv("KAS_KEY_PASSWORD")
+            }
+        }
+    }
 
     defaultConfig {
         applicationId = "id.kaskelas.kas"
@@ -29,6 +45,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("release")
         }
     }
     compileOptions {
