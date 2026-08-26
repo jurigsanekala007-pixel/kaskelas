@@ -26,6 +26,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import id.kaskelas.kas.domain.model.TransactionType
+import id.kaskelas.kas.formatRupiah
 import id.kaskelas.kas.ui.theme.BoneWhite
 import id.kaskelas.kas.ui.theme.CloudGray
 import id.kaskelas.kas.ui.theme.CoralRed
@@ -41,8 +42,8 @@ private val BoneWhiteOnNavy = BoneWhite
 
 @Composable
 fun DashboardScreen(
-    viewModel: DashboardViewModel = hiltViewModel(),
     modifier: Modifier = Modifier,
+    viewModel: DashboardViewModel = hiltViewModel(),
 ) {
     val state by viewModel.uiState.collectAsState()
 
@@ -243,18 +244,4 @@ private fun LastTransactionCard(transaction: id.kaskelas.kas.domain.model.Transa
             }
         }
     }
-}
-
-/** Format Rp dengan pemisah ribuan titik (Rp 1.250.000). */
-internal fun formatRupiah(amount: Long): String {
-    val negative = amount < 0
-    val s = kotlin.math.abs(amount).toString()
-    val sb = StringBuilder()
-    var count = 0
-    for (i in s.length - 1 downTo 0) {
-        if (count > 0 && count % 3 == 0) sb.append('.')
-        sb.append(s[i])
-        count++
-    }
-    return (if (negative) "-" else "") + "Rp " + sb.reverse().toString()
 }

@@ -14,3 +14,15 @@ fun Modifier.clickableNoRipple(onClick: () -> Unit): Modifier = composed {
         onClick = onClick,
     )
 }
+
+/** Format Long ke Rp dengan pemisah ribuan titik (Rp 1.250.000). */
+internal fun formatRupiah(amount: Long): String {
+    val negative = amount < 0
+    val s = kotlin.math.abs(amount).toString()
+    val sb = StringBuilder()
+    s.reversed().forEachIndexed { index, ch ->
+        if (index > 0 && index % 3 == 0) sb.append('.')
+        sb.append(ch)
+    }
+    return (if (negative) "-" else "") + "Rp " + sb.reverse().toString()
+}

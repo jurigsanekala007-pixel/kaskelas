@@ -50,10 +50,10 @@ import id.kaskelas.kas.ui.theme.MidnightNavy
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TransactionListScreen(
-    viewModel: TransactionListViewModel = hiltViewModel(),
     onAddTransaction: () -> Unit,
-    onEditTransaction: (Long) -> Unit = {},
     modifier: Modifier = Modifier,
+    onEditTransaction: (Long) -> Unit = {},
+    viewModel: TransactionListViewModel = hiltViewModel(),
 ) {
     val state by viewModel.uiState.collectAsState()
     val filtered by viewModel.filteredTransactions.collectAsState()

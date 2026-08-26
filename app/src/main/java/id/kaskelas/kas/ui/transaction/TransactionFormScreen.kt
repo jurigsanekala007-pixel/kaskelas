@@ -67,11 +67,11 @@ import java.time.format.DateTimeFormatter
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TransactionFormScreen(
-    viewModel: TransactionFormViewModel = hiltViewModel(),
     onBack: () -> Unit,
     onTransactionSaved: () -> Unit,
-    transactionId: Long? = null,
     modifier: Modifier = Modifier,
+    transactionId: Long? = null,
+    viewModel: TransactionFormViewModel = hiltViewModel(),
 ) {
     val state by viewModel.uiState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }

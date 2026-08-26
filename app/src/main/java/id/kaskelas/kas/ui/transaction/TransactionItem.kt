@@ -27,6 +27,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import id.kaskelas.kas.domain.model.Transaction
 import id.kaskelas.kas.domain.model.TransactionType
+import id.kaskelas.kas.formatRupiah
 import id.kaskelas.kas.ui.theme.CoralRed
 import id.kaskelas.kas.ui.theme.ForestGreen
 import id.kaskelas.kas.ui.theme.KasSpacing
@@ -97,8 +98,9 @@ fun TransactionItem(
             Row(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
+                val prefix = if (transaction.type == TransactionType.MASUK) "+" else "−"
                 Text(
-                    text = formatAmount(transaction.type, transaction.amount),
+                    text = "$prefix ${formatRupiah(transaction.amount)}",
                     style = MaterialTheme.typography.titleMedium.copy(
                         fontWeight = FontWeight.Bold,
                         color = if (transaction.type == TransactionType.MASUK)
@@ -121,21 +123,4 @@ fun TransactionItem(
             }
         }
     }
-}
-
-private fun formatAmount(type: TransactionType, amount: Long): String {
-    val prefix = if (type == TransactionType.MASUK) "+" else "−"
-    return "$prefix Rp ${amount.toRupiahString()}"
-}
-
-private fun Long.toRupiahString(): String {
-    val s = toString()
-    val buffer = StringBuilder()
-    var count = 0
-    for (i in s.length - 1 downTo 0) {
-        if (count > 0 && count % 3 == 0) buffer.append('.')
-        buffer.append(s[i])
-        count++
-    }
-    return buffer.reverse().toString()
 }

@@ -37,7 +37,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import id.kaskelas.kas.domain.model.TransactionType
-import id.kaskelas.kas.ui.dashboard.formatRupiah
+import id.kaskelas.kas.formatRupiah
 import id.kaskelas.kas.ui.theme.AmberGold
 import id.kaskelas.kas.ui.theme.CloudGray
 import id.kaskelas.kas.ui.theme.CoralRed
@@ -52,8 +52,8 @@ private val dayFormatter = DateTimeFormatter.ofPattern("dd MMM")
 
 @Composable
 fun ReportScreen(
-    viewModel: ReportViewModel = hiltViewModel(),
     modifier: Modifier = Modifier,
+    viewModel: ReportViewModel = hiltViewModel(),
 ) {
     val state by viewModel.uiState.collectAsState()
 

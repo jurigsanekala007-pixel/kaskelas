@@ -46,8 +46,8 @@ private val backupFileName =
 
 @Composable
 fun SettingsScreen(
-    viewModel: SettingsViewModel = hiltViewModel(),
     modifier: Modifier = Modifier,
+    viewModel: SettingsViewModel = hiltViewModel(),
 ) {
     val state by viewModel.uiState.collectAsState()
     var message by remember { mutableStateOf<String?>(null) }
