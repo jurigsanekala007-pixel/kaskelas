@@ -12,7 +12,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import id.kaskelas.kas.ui.theme.KasKelasTheme
 
 /** Baris 4 titik indikator PIN yang terisi. */
 @Composable
@@ -35,5 +37,21 @@ fun PinDots(filled: Int, modifier: Modifier = Modifier) {
                     .background(color, CircleShape),
             )
         }
+    }
+}
+
+@Preview(name = "PIN Dots - 2 filled", showBackground = true)
+@Composable
+private fun PinDotsPreview() {
+    KasKelasTheme {
+        PinDots(filled = 2)
+    }
+}
+
+@Preview(name = "PIN Dots - 4 filled", showBackground = true)
+@Composable
+private fun PinDotsFullPreview() {
+    KasKelasTheme {
+        PinDots(filled = 4)
     }
 }

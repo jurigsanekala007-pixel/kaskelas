@@ -18,8 +18,11 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import id.kaskelas.kas.clickableNoRipple
+import id.kaskelas.kas.ui.theme.KasKelasTheme
+import androidx.compose.ui.tooling.preview.Preview
 
 /** Keypad 3x4 ala ATM: angka besar, mudah disentuh jempol. */
+@Preview(name = "PIN Keypad", showBackground = true)
 @Composable
 fun PinKeypad(
     onDigit: (Char) -> Unit,
@@ -68,5 +71,13 @@ private fun KeypadButton(label: String, fontSize: TextUnit, onClick: () -> Unit)
         if (label.isNotEmpty()) {
             Text(text = label, fontSize = fontSize, fontWeight = FontWeight.SemiBold)
         }
+    }
+}
+
+@Preview(name = "PIN Keypad (themed)", showBackground = true)
+@Composable
+private fun PinKeypadPreview() {
+    KasKelasTheme {
+        PinKeypad(onDigit = {}, onDelete = {})
     }
 }

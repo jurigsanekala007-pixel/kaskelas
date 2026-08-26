@@ -22,6 +22,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -30,8 +31,40 @@ import id.kaskelas.kas.domain.model.TransactionType
 import id.kaskelas.kas.formatRupiah
 import id.kaskelas.kas.ui.theme.CoralRed
 import id.kaskelas.kas.ui.theme.ForestGreen
+import id.kaskelas.kas.ui.theme.KasKelasTheme
 import id.kaskelas.kas.ui.theme.KasSpacing
+import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+
+@Preview(name = "Transaksi Masuk", showBackground = true)
+@Composable
+private fun TransactionItemMasukPreview() {
+    KasKelasTheme {
+        TransactionItem(
+            transaction = Transaction(
+                id = 1, type = TransactionType.MASUK, amount = 250_000,
+                category = "Iuran", date = LocalDate.of(2026, 8, 26),
+                note = "Iuran bulan Agustus",
+            ),
+            onDelete = {},
+        )
+    }
+}
+
+@Preview(name = "Transaksi Keluar", showBackground = true)
+@Composable
+private fun TransactionItemKeluarPreview() {
+    KasKelasTheme {
+        TransactionItem(
+            transaction = Transaction(
+                id = 2, type = TransactionType.KELUAR, amount = 50_000,
+                category = "Snack", date = LocalDate.of(2026, 8, 20),
+                note = "Snack arisan",
+            ),
+            onDelete = {},
+        )
+    }
+}
 
 private val dateFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy")
 
