@@ -1,8 +1,9 @@
 package id.kaskelas.kas.domain.model
 
 /**
- * Kategori fixed bawaan (keputusan desain: tidak bisa dikelola user di MVP).
- * Dipisah per jenis supaya pilihan kategori selalu konsisten dengan jenis transaksi.
+ * Default kategori bawaan — di-seed ke tabel categories via Room migration.
+ * Enum ini dipakai sebagai referensi compile-time dan fallback jika DB kosong.
+ * Kategori bisa dikelola user melalui menu Pengaturan.
  */
 enum class KategoriMasuk(val label: String) {
     IURAN("Iuran"),

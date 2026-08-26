@@ -16,3 +16,7 @@
 -keepclassmembers enum id.kaskelas.kas.domain.model.KategoriKeluar {
     *;
 }
+
+# Room entities: field names dipakai oleh generated code dan queries.
+-keep class id.kaskelas.kas.data.transaction.TransactionEntity { *; }
+-keep class id.kaskelas.kas.data.category.CategoryEntity { *; }

@@ -7,6 +7,7 @@ import id.kaskelas.kas.domain.model.KategoriKeluar
 import id.kaskelas.kas.domain.model.KategoriMasuk
 import id.kaskelas.kas.domain.model.Transaction
 import id.kaskelas.kas.domain.model.TransactionType
+import id.kaskelas.kas.domain.repository.CategoryRepository
 import id.kaskelas.kas.domain.repository.TransactionRepository
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,6 +24,7 @@ data class TransactionFormUiState(
     val type: TransactionType = TransactionType.MASUK,
     val amount: String = "",
     val category: String = KategoriMasuk.IURAN.label,
+    val categories: List<String> = emptyList(),
     val date: LocalDate = LocalDate.now(),
     val note: String = "",
     val isSaving: Boolean = false,
@@ -39,6 +41,7 @@ sealed class TransactionFormAction {
 @HiltViewModel
 class TransactionFormViewModel @Inject constructor(
     private val repository: TransactionRepository,
+    private val categoryRepository: CategoryRepository,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(TransactionFormUiState())
@@ -47,17 +50,42 @@ class TransactionFormViewModel @Inject constructor(
     private val _actions = MutableSharedFlow<TransactionFormAction>()
     val actions: SharedFlow<TransactionFormAction> = _actions.asSharedFlow()
 
+    init {
+        loadCategoriesForType(TransactionType.MASUK)
+    }
+
     fun setType(type: TransactionType) {
-        val defaultCategory = when (type) {
-            TransactionType.MASUK -> KategoriMasuk.IURAN.label
-            TransactionType.KELUAR -> KategoriKeluar.SNACK.label
-        }
+        loadCategoriesForType(type)
         _uiState.update {
             it.copy(
                 type = type,
-                category = defaultCategory,
                 error = null,
             )
+        }
+    }
+
+    private fun loadCategoriesForType(type: TransactionType) {
+        val typeStr = when (type) {
+            TransactionType.MASUK -> "MASUK"
+            TransactionType.KELUAR -> "KELUAR"
+        }
+        viewModelScope.launch {
+            val categories = categoryRepository.getAllByType(typeStr).map { it.name }
+            // Fallback ke enum jika DB kosong
+            val finalCategories = categories.ifEmpty {
+                when (type) {
+                    TransactionType.MASUK -> KategoriMasuk.entries.map { it.label }
+                    TransactionType.KELUAR -> KategoriKeluar.entries.map { it.label }
+                }
+            }
+            val currentCategory = _uiState.value.category
+            val defaultCategory = finalCategories.firstOrNull() ?: KategoriMasuk.IURAN.label
+            _uiState.update {
+                it.copy(
+                    categories = finalCategories,
+                    category = if (currentCategory !in finalCategories) defaultCategory else currentCategory,
+                )
+            }
         }
     }
 
@@ -83,10 +111,13 @@ class TransactionFormViewModel @Inject constructor(
         viewModelScope.launch {
             val existing = repository.getById(id)
             if (existing != null) {
+                // Load categories for this transaction's type
+                val type = existing.type
+                loadCategoriesForType(type)
                 _uiState.update {
                     it.copy(
                         editingId = id,
-                        type = existing.type,
+                        type = type,
                         amount = existing.amount.toString(),
                         category = existing.category,
                         date = existing.date,
@@ -100,7 +131,6 @@ class TransactionFormViewModel @Inject constructor(
     fun save() {
         val state = _uiState.value
 
-        // Validasi
         if (state.amount.isBlank()) {
             _uiState.update { it.copy(error = "Nominal tidak boleh kosong") }
             return

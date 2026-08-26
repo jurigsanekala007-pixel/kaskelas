@@ -9,9 +9,12 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import id.kaskelas.kas.core.database.KasDatabase
+import id.kaskelas.kas.data.category.CategoryDao
+import id.kaskelas.kas.data.category.CategoryRepositoryImpl
 import id.kaskelas.kas.data.settings.LockRepositoryImpl
 import id.kaskelas.kas.data.transaction.TransactionDao
 import id.kaskelas.kas.data.transaction.TransactionRepositoryImpl
+import id.kaskelas.kas.domain.repository.CategoryRepository
 import id.kaskelas.kas.domain.repository.LockRepository
 import id.kaskelas.kas.domain.repository.TransactionRepository
 import javax.inject.Singleton
@@ -27,6 +30,10 @@ abstract class RepositoryModule {
     @Binds
     @Singleton
     abstract fun bindTransactionRepository(impl: TransactionRepositoryImpl): TransactionRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindCategoryRepository(impl: CategoryRepositoryImpl): CategoryRepository
 }
 
 @Module
@@ -43,4 +50,8 @@ object DatabaseModule {
     @Provides
     @Singleton
     fun provideTransactionDao(db: KasDatabase): TransactionDao = db.transactionDao()
+
+    @Provides
+    @Singleton
+    fun provideCategoryDao(db: KasDatabase): CategoryDao = db.categoryDao()
 }

@@ -53,8 +53,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import id.kaskelas.kas.domain.model.KategoriKeluar
-import id.kaskelas.kas.domain.model.KategoriMasuk
 import id.kaskelas.kas.domain.model.TransactionType
 import id.kaskelas.kas.ui.theme.CoralRed
 import id.kaskelas.kas.ui.theme.DeepBlue
@@ -158,7 +156,7 @@ fun TransactionFormScreen(
 
             // Kategori
             CategorySection(
-                type = state.type,
+                categories = state.categories,
                 selectedCategory = state.category,
                 onCategorySelected = viewModel::setCategory,
             )
@@ -337,15 +335,10 @@ private fun AmountSection(
 
 @Composable
 private fun CategorySection(
-    type: TransactionType,
+    categories: List<String>,
     selectedCategory: String,
     onCategorySelected: (String) -> Unit,
 ) {
-    val categories: List<String> = when (type) {
-        TransactionType.MASUK -> KategoriMasuk.entries.map { it.label }
-        TransactionType.KELUAR -> KategoriKeluar.entries.map { it.label }
-    }
-
     Column {
         Text(
             text = "Kategori",

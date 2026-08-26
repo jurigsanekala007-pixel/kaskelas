@@ -15,13 +15,16 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 import javax.inject.Inject
 
 data class TransactionListUiState(
     val transactions: List<Transaction> = emptyList(),
     val filterCategory: String? = null,
     val searchQuery: String = "",
-    val showDeleteDialog: Long? = null, // id transaksi yang mau dihapus
+    val dateFrom: LocalDate? = null,
+    val dateTo: LocalDate? = null,
+    val showDeleteDialog: Long? = null,
 )
 
 sealed class TransactionListEvent {
@@ -47,7 +50,9 @@ class TransactionListViewModel @Inject constructor(
                     (state.filterCategory == null || t.category == state.filterCategory) &&
                     (state.searchQuery.isEmpty() ||
                         t.category.contains(state.searchQuery, ignoreCase = true) ||
-                        t.note.contains(state.searchQuery, ignoreCase = true))
+                        t.note.contains(state.searchQuery, ignoreCase = true)) &&
+                    (state.dateFrom == null || !t.date.isBefore(state.dateFrom)) &&
+                    (state.dateTo == null || !t.date.isAfter(state.dateTo))
                 }
                 .sortedByDescending { it.date }
         }
@@ -71,6 +76,18 @@ class TransactionListViewModel @Inject constructor(
 
     fun setSearchQuery(query: String) {
         _uiState.update { it.copy(searchQuery = query) }
+    }
+
+    fun setDateFrom(date: LocalDate?) {
+        _uiState.update { it.copy(dateFrom = date) }
+    }
+
+    fun setDateTo(date: LocalDate?) {
+        _uiState.update { it.copy(dateTo = date) }
+    }
+
+    fun clearDateFilter() {
+        _uiState.update { it.copy(dateFrom = null, dateTo = null) }
     }
 
     fun showDeleteDialog(transactionId: Long) {

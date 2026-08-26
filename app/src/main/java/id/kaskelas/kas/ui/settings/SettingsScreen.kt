@@ -46,6 +46,7 @@ private val backupFileName =
 
 @Composable
 fun SettingsScreen(
+    onNavigateToCategory: (String) -> Unit = { _ -> },
     modifier: Modifier = Modifier,
     viewModel: SettingsViewModel = hiltViewModel(),
 ) {
@@ -90,6 +91,24 @@ fun SettingsScreen(
                 subtitle = "Ganti PIN 4 digit aplikasi",
                 onClick = viewModel::startChangePin,
                 actionLabel = "Ubah",
+            )
+        }
+        Spacer(modifier = Modifier.height(KasSpacing.md))
+
+        // ---------- Kategori ----------
+        SectionCard(title = "Kategori") {
+            SettingRow(
+                title = "Kategori Pemasukan",
+                subtitle = "Kelola kategori pemasukan",
+                onClick = { onNavigateToCategory("MASUK") },
+                actionLabel = "Atur",
+            )
+            HorizontalDivider(modifier = Modifier.padding(vertical = KasSpacing.sm))
+            SettingRow(
+                title = "Kategori Pengeluaran",
+                subtitle = "Kelola kategori pengeluaran",
+                onClick = { onNavigateToCategory("KELUAR") },
+                actionLabel = "Atur",
             )
         }
         Spacer(modifier = Modifier.height(KasSpacing.md))

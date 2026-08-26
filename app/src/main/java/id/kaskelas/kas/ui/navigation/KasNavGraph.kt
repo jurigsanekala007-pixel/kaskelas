@@ -18,6 +18,7 @@ import androidx.navigation.navArgument
 import id.kaskelas.kas.ui.dashboard.DashboardScreen
 import id.kaskelas.kas.ui.lock.LockScreen
 import id.kaskelas.kas.ui.report.ReportScreen
+import id.kaskelas.kas.ui.settings.CategoryManageScreen
 import id.kaskelas.kas.ui.settings.SettingsScreen
 import id.kaskelas.kas.ui.transaction.TransactionFormScreen
 import id.kaskelas.kas.ui.transaction.TransactionListScreen
@@ -36,6 +37,7 @@ fun KasNavGraph(navController: NavHostController = rememberNavController()) {
     val showBottomBar = currentRoute != null
         && currentRoute != Routes.LOCK
         && !currentRoute.startsWith("transaksi_form")
+        && !currentRoute.startsWith("category_manage")
 
     // Di layar lock, tombol back tidak boleh keluar app ke main graph.
     if (currentRoute == Routes.LOCK) {
@@ -90,7 +92,11 @@ fun KasNavGraph(navController: NavHostController = rememberNavController()) {
                 ReportScreen()
             }
             composable(Tab.PENGATURAN.route) {
-                SettingsScreen()
+                SettingsScreen(
+                    onNavigateToCategory = { type ->
+                        navController.navigate("category_manage/$type")
+                    },
+                )
             }
             composable(
                 route = "transaksi_form?transactionId={transactionId}",
@@ -106,6 +112,16 @@ fun KasNavGraph(navController: NavHostController = rememberNavController()) {
                     transactionId = if (id == -1L) null else id,
                     onBack = { navController.popBackStack() },
                     onTransactionSaved = { navController.popBackStack() },
+                )
+            }
+            composable(
+                route = "category_manage/{type}",
+                arguments = listOf(
+                    navArgument("type") { type = NavType.StringType },
+                ),
+            ) {
+                CategoryManageScreen(
+                    onBack = { navController.popBackStack() },
                 )
             }
         }
