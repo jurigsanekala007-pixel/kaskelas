@@ -11,18 +11,22 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import id.kaskelas.kas.domain.model.KategoriKeluar
 import id.kaskelas.kas.domain.model.KategoriMasuk
 import id.kaskelas.kas.domain.model.Transaction
 import id.kaskelas.kas.domain.model.TransactionType
@@ -56,7 +60,7 @@ private val sampleTransactions = listOf(
 
 @Preview(name = "Dashboard - Balance Card", showBackground = true, widthDp = 400)
 @Composable
-private fun BalanceCardPreview() {
+private fun balanceCardPreview() {
     KasKelasTheme {
         Card(
             modifier = Modifier.fillMaxWidth(),
@@ -81,7 +85,7 @@ private fun BalanceCardPreview() {
 
 @Preview(name = "Dashboard - Balance Negatif", showBackground = true, widthDp = 400)
 @Composable
-private fun BalanceCardNegativePreview() {
+private fun balanceCardNegativePreview() {
     KasKelasTheme {
         Card(
             modifier = Modifier.fillMaxWidth(),
@@ -106,7 +110,7 @@ private fun BalanceCardNegativePreview() {
 
 @Preview(name = "Dashboard - Month Summary", showBackground = true, widthDp = 400)
 @Composable
-private fun MonthSummaryPreview() {
+private fun monthSummaryPreview() {
     KasKelasTheme {
         Row(horizontalArrangement = Arrangement.spacedBy(KasSpacing.md)) {
             Card(
@@ -141,7 +145,7 @@ private fun MonthSummaryPreview() {
 
 @Preview(name = "Transaction List - With Data", showBackground = true, widthDp = 400)
 @Composable
-private fun TransactionListPreview() {
+private fun transactionListPreview() {
     KasKelasTheme {
         Column(
             modifier = Modifier.fillMaxSize().padding(KasSpacing.md),
@@ -158,7 +162,7 @@ private fun TransactionListPreview() {
 
 @Preview(name = "Transaction List - Empty", showBackground = true, widthDp = 400)
 @Composable
-private fun TransactionListEmptyPreview() {
+private fun transactionListEmptyPreview() {
     KasKelasTheme {
         Column(
             modifier = Modifier.fillMaxSize().padding(KasSpacing.md),
@@ -178,7 +182,7 @@ private fun TransactionListEmptyPreview() {
 
 @Preview(name = "Transaction Form - Tambah", showBackground = true, widthDp = 400)
 @Composable
-private fun TransactionFormPreview() {
+private fun transactionFormPreview() {
     KasKelasTheme {
         Column(
             modifier = Modifier.fillMaxSize().padding(KasSpacing.md).verticalScroll(rememberScrollState()),
@@ -188,8 +192,8 @@ private fun TransactionFormPreview() {
 
             // Type chips
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(KasSpacing.md)) {
-                androidx.compose.material3.FilterChip(selected = true, onClick = {}, label = { Text("Pemasukan") })
-                androidx.compose.material3.FilterChip(selected = false, onClick = {}, label = { Text("Pengeluaran") })
+                FilterChip(selected = true, onClick = {}, label = { Text("Pemasukan") })
+                FilterChip(selected = false, onClick = {}, label = { Text("Pengeluaran") })
             }
             Spacer(modifier = Modifier.height(KasSpacing.lg))
 
@@ -203,11 +207,11 @@ private fun TransactionFormPreview() {
             Text("Kategori", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = MidnightNavy)
             Spacer(modifier = Modifier.height(KasSpacing.sm))
             Row(horizontalArrangement = Arrangement.spacedBy(KasSpacing.sm)) {
-                KategoriMasuk.entries.take(3).forEach { k ->
-                    androidx.compose.material3.FilterChip(
-                        selected = k == KategoriMasuk.IURAN,
+                KategoriMasuk.entries.take(3).forEach { kategori ->
+                    FilterChip(
+                        selected = kategori == KategoriMasuk.IURAN,
                         onClick = {},
-                        label = { Text(k.label) },
+                        label = { Text(kategori.label) },
                     )
                 }
             }
@@ -216,7 +220,7 @@ private fun TransactionFormPreview() {
             // Date
             Text("Tanggal", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = MidnightNavy)
             Spacer(modifier = Modifier.height(KasSpacing.sm))
-            androidx.compose.material3.OutlinedButton(onClick = {}, modifier = Modifier.fillMaxWidth()) {
+            OutlinedButton(onClick = {}, modifier = Modifier.fillMaxWidth()) {
                 Text("26 Agustus 2026", fontWeight = FontWeight.Medium)
             }
         }
@@ -229,7 +233,7 @@ private fun TransactionFormPreview() {
 
 @Preview(name = "Report - Summary Card", showBackground = true, widthDp = 400)
 @Composable
-private fun ReportSummaryCardPreview() {
+private fun reportSummaryCardPreview() {
     KasKelasTheme {
         Card(
             modifier = Modifier.fillMaxWidth(),
@@ -264,7 +268,7 @@ private fun ReportSummaryCardPreview() {
 
 @Preview(name = "Report - Transaction Row", showBackground = true, widthDp = 400)
 @Composable
-private fun ReportTransactionRowPreview() {
+private fun reportTransactionRowPreview() {
     KasKelasTheme {
         Card(
             modifier = Modifier.fillMaxWidth(),
@@ -292,7 +296,7 @@ private fun ReportTransactionRowPreview() {
 
 @Preview(name = "Settings - Section Card", showBackground = true, widthDp = 400)
 @Composable
-private fun SettingsSectionCardPreview() {
+private fun settingsSectionCardPreview() {
     KasKelasTheme {
         Card(
             modifier = Modifier.fillMaxWidth(),
@@ -307,7 +311,7 @@ private fun SettingsSectionCardPreview() {
                         Text("Ubah PIN", style = MaterialTheme.typography.titleMedium, color = MidnightNavy)
                         Text("Ganti PIN 4 digit aplikasi", style = MaterialTheme.typography.bodyMedium, color = MidnightNavy.copy(alpha = 0.6f))
                     }
-                    androidx.compose.material3.TextButton(onClick = {}) { Text("Ubah") }
+                    TextButton(onClick = {}) { Text("Ubah") }
                 }
             }
         }
@@ -340,7 +344,7 @@ private fun SettingsSectionCardPreview() {
 
 @Preview(name = "Lock - PIN Entry", showBackground = true, widthDp = 400, heightDp = 700)
 @Composable
-private fun LockPinEntryPreview() {
+private fun lockPinEntryPreview() {
     KasKelasTheme {
         Column(
             modifier = Modifier.fillMaxSize().padding(KasSpacing.lg),
@@ -361,7 +365,7 @@ private fun LockPinEntryPreview() {
 
 @Preview(name = "Lock - PIN Setup", showBackground = true, widthDp = 400, heightDp = 700)
 @Composable
-private fun LockPinSetupPreview() {
+private fun lockPinSetupPreview() {
     KasKelasTheme {
         Column(
             modifier = Modifier.fillMaxSize().padding(KasSpacing.lg),
@@ -382,7 +386,7 @@ private fun LockPinSetupPreview() {
 
 @Preview(name = "Lock - Security Question", showBackground = true, widthDp = 400, heightDp = 700)
 @Composable
-private fun LockSecurityQuestionPreview() {
+private fun lockSecurityQuestionPreview() {
     KasKelasTheme {
         Column(
             modifier = Modifier.fillMaxSize().padding(KasSpacing.lg),
@@ -390,23 +394,23 @@ private fun LockSecurityQuestionPreview() {
             Text("Atur Pertanyaan Keamanan", style = MaterialTheme.typography.titleLarge)
             Text("Pertanyaan ini dipakai kalau kamu lupa PIN.", style = MaterialTheme.typography.bodyMedium)
             Spacer(modifier = Modifier.height(KasSpacing.md))
-            KategoriMasuk.entries.take(3).forEach { _ ->
-                androidx.compose.material3.FilterChip(
-                    selected = false,
+            repeat(3) {
+                FilterChip(
+                    selected = it == 0,
                     onClick = {},
                     label = { Text("Siapa nama hewan peliharaanmu?") },
                     modifier = Modifier.padding(vertical = KasSpacing.xs),
                 )
             }
             Spacer(modifier = Modifier.height(KasSpacing.md))
-            androidx.compose.material3.OutlinedTextField(
+            OutlinedTextField(
                 value = "",
                 onValueChange = {},
                 label = { Text("Jawaban") },
                 modifier = Modifier.fillMaxWidth(),
             )
             Spacer(modifier = Modifier.height(KasSpacing.lg))
-            androidx.compose.material3.Button(onClick = {}, modifier = Modifier.fillMaxWidth()) {
+            Button(onClick = {}, modifier = Modifier.fillMaxWidth()) {
                 Text("Selesai")
             }
         }
