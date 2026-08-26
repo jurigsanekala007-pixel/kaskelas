@@ -37,6 +37,7 @@ data class LockUiState(
     val lockedUntilMs: Long = 0,
     val failedAttempts: Int = 0,
     val securityQuestion: String? = null,
+    val isVerifying: Boolean = false,
 )
 
 @HiltViewModel
@@ -60,7 +61,7 @@ class LockViewModel @Inject constructor(
 
     fun onDigit(digit: Char) {
         val s = _state.value
-        if (s.pin.length >= PIN_LENGTH || s.lockedUntilMs > System.currentTimeMillis()) return
+        if (s.isVerifying || s.pin.length >= PIN_LENGTH || s.lockedUntilMs > System.currentTimeMillis()) return
         val newPin = s.pin + digit
         if (newPin.length < PIN_LENGTH) {
             _state.value = s.copy(pin = newPin, message = null)
@@ -71,7 +72,10 @@ class LockViewModel @Inject constructor(
             LockStep.SETUP_PIN ->
                 _state.value = s.copy(pin = "", firstPinEntry = newPin, step = LockStep.CONFIRM_PIN)
             LockStep.CONFIRM_PIN -> confirmSetup(newPin)
-            LockStep.VERIFY -> verify(newPin)
+            LockStep.VERIFY -> {
+                _state.value = s.copy(pin = "", isVerifying = true)
+                verify(newPin)
+            }
             LockStep.RESET_NEW_PIN ->
                 _state.value = s.copy(pin = "", firstPinEntry = newPin, step = LockStep.RESET_CONFIRM_PIN)
             LockStep.RESET_CONFIRM_PIN -> confirmReset(newPin)
@@ -153,9 +157,10 @@ class LockViewModel @Inject constructor(
                 message = "PIN tidak sama, buat ulang",
             )
         } else {
+            _state.value = s.copy(pin = "")
             viewModelScope.launch {
                 lockRepository.savePin(pin)
-                _state.value = s.copy(pin = "", step = LockStep.SETUP_SECURITY_QUESTION)
+                _state.value = _state.value.copy(step = LockStep.SETUP_SECURITY_QUESTION)
             }
         }
     }
@@ -163,10 +168,13 @@ class LockViewModel @Inject constructor(
     private fun verify(pin: String) {
         viewModelScope.launch {
             val s = _state.value
-            if (s.lockedUntilMs > System.currentTimeMillis()) return@launch
+            if (s.lockedUntilMs > System.currentTimeMillis()) {
+                _state.value = _state.value.copy(isVerifying = false)
+                return@launch
+            }
             val ok = lockRepository.verifyPin(pin)
             if (ok) {
-                _state.value = s.copy(pin = "", unlocked = true, failedAttempts = 0, message = null)
+                _state.value = s.copy(pin = "", unlocked = true, failedAttempts = 0, message = null, isVerifying = false)
             } else {
                 val attempts = s.failedAttempts + 1
                 // Anti brute-force ringan: tiap 3x salah → tunggu 5 detik.
@@ -176,6 +184,7 @@ class LockViewModel @Inject constructor(
                     failedAttempts = attempts,
                     message = "PIN salah" + if (mustWait) ", tunggu sebentar…" else "",
                     lockedUntilMs = if (mustWait) System.currentTimeMillis() + DELAY_MS else 0L,
+                    isVerifying = false,
                 )
                 if (mustWait) {
                     delay(DELAY_MS)
@@ -195,9 +204,10 @@ class LockViewModel @Inject constructor(
                 message = "PIN tidak sama, buat ulang",
             )
         } else {
+            _state.value = s.copy(pin = "")
             viewModelScope.launch {
                 lockRepository.savePin(pin)
-                _state.value = s.copy(pin = "", unlocked = true, failedAttempts = 0)
+                _state.value = _state.value.copy(unlocked = true, failedAttempts = 0)
             }
         }
     }

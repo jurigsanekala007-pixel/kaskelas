@@ -32,9 +32,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -57,7 +55,6 @@ fun TransactionListScreen(
 ) {
     val state by viewModel.uiState.collectAsState()
     val filtered by viewModel.filteredTransactions.collectAsState()
-    var searchQuery by remember { mutableStateOf("") }
     val snackbarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(Unit) {
@@ -99,11 +96,8 @@ fun TransactionListScreen(
         ) {
             // Pencarian
             OutlinedTextField(
-                value = searchQuery,
-                onValueChange = {
-                    searchQuery = it
-                    viewModel.setSearchQuery(it)
-                },
+                value = state.searchQuery,
+                onValueChange = viewModel::setSearchQuery,
                 label = { Text("Cari kategori atau keterangan…") },
                 modifier = Modifier
                     .fillMaxWidth()

@@ -33,7 +33,9 @@ object Routes {
 fun KasNavGraph(navController: NavHostController = rememberNavController()) {
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = backStackEntry?.destination?.route
-    val showBottomBar = currentRoute != null && currentRoute != Routes.LOCK
+    val showBottomBar = currentRoute != null
+        && currentRoute != Routes.LOCK
+        && !currentRoute.startsWith("transaksi_form")
 
     // Di layar lock, tombol back tidak boleh keluar app ke main graph.
     if (currentRoute == Routes.LOCK) {

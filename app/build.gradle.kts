@@ -13,6 +13,7 @@ ksp {
 
 android {
     namespace = "id.kaskelas.kas"
+    // compileSdk 36 diperlukan oleh Compose BOM 2025.10.01 (require compileSdk 36)
     compileSdk = 36
 
     signingConfigs {
@@ -52,14 +53,15 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    kotlin {
-        compilerOptions {
-            jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17
-            freeCompilerArgs.add("-Xannotation-default-target=param-property")
-        }
-    }
     buildFeatures {
         compose = true
+    }
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17
+        freeCompilerArgs.add("-Xannotation-default-target=param-property")
     }
 }
 

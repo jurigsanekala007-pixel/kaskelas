@@ -2,7 +2,6 @@ package id.kaskelas.kas.domain.repository
 
 import id.kaskelas.kas.domain.model.Transaction
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
 
 interface TransactionRepository {
     fun observeAll(): Flow<List<Transaction>>

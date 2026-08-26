@@ -62,7 +62,9 @@ class TransactionFormViewModel @Inject constructor(
     }
 
     fun setAmount(value: String) {
-        _uiState.update { it.copy(amount = value, error = null) }
+        if (value.isEmpty() || value.all { it.isDigit() }) {
+            _uiState.update { it.copy(amount = value, error = null) }
+        }
     }
 
     fun setCategory(category: String) {
@@ -110,7 +112,7 @@ class TransactionFormViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            _uiState.update { it.copy(isSaving = true, error = null) }
+            _uiState.update { it.copy(isSaving = true, error = null, saveSuccess = false) }
 
             val transaction = Transaction(
                 id = state.editingId ?: 0L,

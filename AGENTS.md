@@ -51,7 +51,7 @@ Execution is still driven by the agreed phase plan below — do not add features
   `sdk.dir=C\:/Users/SAGU/AppData/Local/Android/Sdk` (backslash escaping causes `IOException: filename syntax incorrect`)
 - **Gradle:** use `./gradlew` via git-bash (MSYS shell), never the system gradle
 - **AGP / Kotlin / deps (pinned in `gradle/libs.versions.toml`):**
-  - AGP 9.1.1, Gradle 9.3.1 (wrapper), Kotlin 2.2.20, KSP 2.3.6
+  - AGP 9.1.1, Gradle 9.7.1 (wrapper), Kotlin 2.2.20, KSP 2.3.6
   - Hilt 2.60.1, Room 2.8.4, Compose BOM 2025.10.01, Navigation 2.9.5
   - Coroutines 1.10.2, Datastore 1.1.7, Security-Crypto 1.1.0
 

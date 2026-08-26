@@ -15,6 +15,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.Backspace
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material3.Button
@@ -299,10 +300,11 @@ private fun AmountSection(
                         onAmountChange(amount.dropLast(1))
                     }
                 },
+                enabled = amount.isNotEmpty(),
             ) {
                 Icon(
-                    Icons.Default.Remove,
-                    contentDescription = "Kurang",
+                    Icons.AutoMirrored.Filled.Backspace,
+                    contentDescription = "Hapus",
                     tint = color,
                 )
             }
@@ -320,15 +322,12 @@ private fun AmountSection(
                 isError = !amount.isBlank() && amount.toLongOrNull() == null,
             )
             IconButton(
-                onClick = {
-                    if (amount.isNotEmpty()) {
-                        onAmountChange(amount + "0")
-                    }
-                },
+                onClick = { onAmountChange("") },
+                enabled = amount.isNotEmpty(),
             ) {
                 Icon(
                     Icons.Default.Add,
-                    contentDescription = "Tambah",
+                    contentDescription = "Hapus Semua",
                     tint = color,
                 )
             }
