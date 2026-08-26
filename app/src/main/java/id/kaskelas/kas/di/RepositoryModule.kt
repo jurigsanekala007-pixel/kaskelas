@@ -37,6 +37,7 @@ object DatabaseModule {
     @Singleton
     fun provideDatabase(@ApplicationContext context: Context): KasDatabase =
         Room.databaseBuilder(context, KasDatabase::class.java, KasDatabase.NAME)
+            .fallbackToDestructiveMigration(dropAllTables = true)
             .addMigrations(*KasDatabase.ALL_MIGRATIONS)
             .build()
 

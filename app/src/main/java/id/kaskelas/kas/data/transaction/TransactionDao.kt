@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Transaction
 import androidx.room.Update
 import id.kaskelas.kas.data.transaction.TransactionEntity
 import kotlinx.coroutines.flow.Flow
@@ -32,6 +33,9 @@ interface TransactionDao {
     )
     fun observeFrom(from: String?): Flow<List<TransactionEntity>>
 
+    @Query("SELECT * FROM transactions")
+    suspend fun getAll(): List<TransactionEntity>
+
     @Query("SELECT * FROM transactions WHERE id = :id")
     suspend fun getById(id: Long): TransactionEntity?
 
@@ -43,4 +47,10 @@ interface TransactionDao {
 
     @Insert
     suspend fun insertAll(entities: List<TransactionEntity>): List<Long>
+
+    @Transaction
+    suspend fun replaceAll(entities: List<TransactionEntity>) {
+        deleteAll()
+        insertAll(entities)
+    }
 }

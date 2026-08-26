@@ -39,6 +39,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import id.kaskelas.kas.domain.model.KategoriKeluar
 import id.kaskelas.kas.domain.model.KategoriMasuk
 import id.kaskelas.kas.domain.model.TransactionType
 import id.kaskelas.kas.ui.theme.CoralRed
@@ -55,7 +56,7 @@ fun TransactionListScreen(
     modifier: Modifier = Modifier,
 ) {
     val state by viewModel.uiState.collectAsState()
-    val filtered = viewModel.getFilteredTransactions()
+    val filtered by viewModel.filteredTransactions.collectAsState()
     var searchQuery by remember { mutableStateOf("") }
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -123,6 +124,17 @@ fun TransactionListScreen(
                     label = { Text("Semua") },
                 )
                 KategoriMasuk.entries.forEach { kategori ->
+                    androidx.compose.material3.FilterChip(
+                        selected = state.filterCategory == kategori.label,
+                        onClick = {
+                            viewModel.setFilterCategory(
+                                if (state.filterCategory == kategori.label) null else kategori.label,
+                            )
+                        },
+                        label = { Text(kategori.label) },
+                    )
+                }
+                KategoriKeluar.entries.forEach { kategori ->
                     androidx.compose.material3.FilterChip(
                         selected = state.filterCategory == kategori.label,
                         onClick = {

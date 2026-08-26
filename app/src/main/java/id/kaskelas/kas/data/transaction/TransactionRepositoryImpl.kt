@@ -3,7 +3,6 @@ package id.kaskelas.kas.data.transaction
 import id.kaskelas.kas.domain.repository.TransactionRepository
 import id.kaskelas.kas.domain.model.Transaction
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -30,12 +29,11 @@ class TransactionRepositoryImpl @Inject constructor(
     override suspend fun delete(transaction: Transaction) =
         dao.delete(transaction.toEntity())
 
-    /** Dipakai restore: hapus semua lalu isi ulang dari backup. */
+    /** Dipakai restore: hapus semua lalu isi ulang dari backup (atomic via @Transaction). */
     override suspend fun replaceAll(transactions: List<Transaction>) {
-        dao.deleteAll()
-        dao.insertAll(transactions.map { it.toEntity() })
+        dao.replaceAll(transactions.map { it.toEntity() })
     }
 
     override suspend fun getAll(): List<Transaction> =
-        dao.observeAll().first().map { it.toDomain() }
+        dao.getAll().map { it.toDomain() }
 }

@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import id.kaskelas.kas.domain.model.Transaction
-import id.kaskelas.kas.domain.model.TransactionType
 import id.kaskelas.kas.domain.repository.TransactionRepository
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -12,7 +11,7 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -40,6 +39,23 @@ class TransactionListViewModel @Inject constructor(
 
     private val _events = MutableSharedFlow<TransactionListEvent>()
     val events: SharedFlow<TransactionListEvent> = _events.asSharedFlow()
+
+    val filteredTransactions: StateFlow<List<Transaction>> = _uiState
+        .map { state ->
+            state.transactions
+                .filter { t ->
+                    (state.filterCategory == null || t.category == state.filterCategory) &&
+                    (state.searchQuery.isEmpty() ||
+                        t.category.contains(state.searchQuery, ignoreCase = true) ||
+                        t.note.contains(state.searchQuery, ignoreCase = true))
+                }
+                .sortedByDescending { it.date }
+        }
+        .stateIn(
+            scope = viewModelScope,
+            started = kotlinx.coroutines.flow.SharingStarted.WhileSubscribed(5_000),
+            initialValue = emptyList(),
+        )
 
     init {
         viewModelScope.launch {
@@ -78,17 +94,5 @@ class TransactionListViewModel @Inject constructor(
                 _events.emit(TransactionListEvent.ShowSnackbar("Gagal menghapus: ${e.message}"))
             }
         }
-    }
-
-    fun getFilteredTransactions(): List<Transaction> {
-        val state = _uiState.value
-        return state.transactions
-            .filter { t ->
-                (state.filterCategory == null || t.category == state.filterCategory) &&
-                (state.searchQuery.isEmpty() ||
-                    t.category.contains(state.searchQuery, ignoreCase = true) ||
-                    t.note.contains(state.searchQuery, ignoreCase = true))
-            }
-            .sortedByDescending { it.date }
     }
 }
