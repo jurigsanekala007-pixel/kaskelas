@@ -38,7 +38,6 @@ import id.kaskelas.kas.ui.lock.PinDots
 import id.kaskelas.kas.ui.lock.PinKeypad
 import id.kaskelas.kas.ui.theme.CoralRed
 import id.kaskelas.kas.ui.theme.KasSpacing
-import id.kaskelas.kas.ui.theme.MidnightNavy
 import java.time.format.DateTimeFormatter
 
 private val backupFileName =
@@ -80,7 +79,7 @@ fun SettingsScreen(
         Text(
             text = "Pengaturan",
             style = MaterialTheme.typography.headlineLarge,
-            color = MidnightNavy,
+            color = MaterialTheme.colorScheme.onSurface,
         )
         Spacer(modifier = Modifier.height(KasSpacing.lg))
 
@@ -119,7 +118,7 @@ fun SettingsScreen(
                 text = "Simpan seluruh transaksi ke file JSON, atau pulihkan dari backup sebelumnya. " +
                     "Restore akan MENGGANTI semua data saat ini.",
                 style = MaterialTheme.typography.bodyMedium,
-                color = MidnightNavy.copy(alpha = 0.7f),
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
             )
             Spacer(modifier = Modifier.height(KasSpacing.md))
             Row(horizontalArrangement = Arrangement.spacedBy(KasSpacing.sm)) {
@@ -231,7 +230,7 @@ private fun SectionCard(
                 text = title,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.SemiBold,
-                color = MidnightNavy,
+                color = MaterialTheme.colorScheme.onSurface,
             )
             Spacer(modifier = Modifier.height(KasSpacing.sm))
             content()
@@ -251,11 +250,11 @@ private fun SettingRow(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Column(modifier = Modifier.weight(1f)) {
-            Text(title, style = MaterialTheme.typography.titleMedium, color = MidnightNavy)
+            Text(title, style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurface)
             Text(
                 subtitle,
                 style = MaterialTheme.typography.bodyMedium,
-                color = MidnightNavy.copy(alpha = 0.6f),
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
             )
         }
         TextButton(onClick = onClick) { Text(actionLabel) }
@@ -268,7 +267,7 @@ private fun SettingInfoRow(label: String, value: String) {
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
-        Text(label, style = MaterialTheme.typography.bodyMedium, color = MidnightNavy.copy(alpha = 0.7f))
-        Text(value, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold, color = MidnightNavy)
+        Text(label, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f))
+        Text(value, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.onSurface)
     }
 }

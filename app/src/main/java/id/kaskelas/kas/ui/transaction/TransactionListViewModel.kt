@@ -3,7 +3,10 @@ package id.kaskelas.kas.ui.transaction
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import id.kaskelas.kas.domain.model.KategoriKeluar
+import id.kaskelas.kas.domain.model.KategoriMasuk
 import id.kaskelas.kas.domain.model.Transaction
+import id.kaskelas.kas.domain.repository.CategoryRepository
 import id.kaskelas.kas.domain.repository.TransactionRepository
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,6 +23,8 @@ import javax.inject.Inject
 
 data class TransactionListUiState(
     val transactions: List<Transaction> = emptyList(),
+    val masukCategories: List<String> = emptyList(),
+    val keluarCategories: List<String> = emptyList(),
     val filterCategory: String? = null,
     val searchQuery: String = "",
     val dateFrom: LocalDate? = null,
@@ -35,6 +40,7 @@ sealed class TransactionListEvent {
 @HiltViewModel
 class TransactionListViewModel @Inject constructor(
     private val repository: TransactionRepository,
+    private val categoryRepository: CategoryRepository,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(TransactionListUiState())
@@ -67,6 +73,17 @@ class TransactionListViewModel @Inject constructor(
             repository.observeAll().collect { all ->
                 _uiState.update { it.copy(transactions = all) }
             }
+        }
+        loadCategories()
+    }
+
+    private fun loadCategories() {
+        viewModelScope.launch {
+            val masuk = categoryRepository.getAllByType("MASUK").map { it.name }
+                .ifEmpty { KategoriMasuk.entries.map { k -> k.label } }
+            val keluar = categoryRepository.getAllByType("KELUAR").map { it.name }
+                .ifEmpty { KategoriKeluar.entries.map { k -> k.label } }
+            _uiState.update { it.copy(masukCategories = masuk, keluarCategories = keluar) }
         }
     }
 

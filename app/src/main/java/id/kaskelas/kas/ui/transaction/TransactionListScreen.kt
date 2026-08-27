@@ -11,15 +11,18 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.outlined.Receipt
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -45,14 +48,12 @@ import java.time.format.DateTimeFormatter
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import id.kaskelas.kas.domain.model.KategoriKeluar
-import id.kaskelas.kas.domain.model.KategoriMasuk
 import id.kaskelas.kas.domain.model.TransactionType
 import id.kaskelas.kas.ui.theme.CoralRed
 import id.kaskelas.kas.ui.theme.ForestGreen
 import id.kaskelas.kas.ui.theme.KasSpacing
-import id.kaskelas.kas.ui.theme.MidnightNavy
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -85,7 +86,7 @@ fun TransactionListScreen(
                     Text(
                         text = "Riwayat Transaksi",
                         fontWeight = FontWeight.Bold,
-                        color = MidnightNavy,
+                        color = MaterialTheme.colorScheme.onSurface,
                     )
                 },
             )
@@ -166,31 +167,31 @@ fun TransactionListScreen(
                     .padding(horizontal = KasSpacing.md),
                 horizontalArrangement = Arrangement.spacedBy(KasSpacing.sm),
             ) {
-                androidx.compose.material3.FilterChip(
+                FilterChip(
                     selected = state.filterCategory == null,
                     onClick = { viewModel.setFilterCategory(null) },
                     label = { Text("Semua") },
                 )
-                KategoriMasuk.entries.forEach { kategori ->
-                    androidx.compose.material3.FilterChip(
-                        selected = state.filterCategory == kategori.label,
+                state.masukCategories.forEach { kategori ->
+                    FilterChip(
+                        selected = state.filterCategory == kategori,
                         onClick = {
                             viewModel.setFilterCategory(
-                                if (state.filterCategory == kategori.label) null else kategori.label,
+                                if (state.filterCategory == kategori) null else kategori,
                             )
                         },
-                        label = { Text(kategori.label) },
+                        label = { Text(kategori) },
                     )
                 }
-                KategoriKeluar.entries.forEach { kategori ->
-                    androidx.compose.material3.FilterChip(
-                        selected = state.filterCategory == kategori.label,
+                state.keluarCategories.forEach { kategori ->
+                    FilterChip(
+                        selected = state.filterCategory == kategori,
                         onClick = {
                             viewModel.setFilterCategory(
-                                if (state.filterCategory == kategori.label) null else kategori.label,
+                                if (state.filterCategory == kategori) null else kategori,
                             )
                         },
-                        label = { Text(kategori.label) },
+                        label = { Text(kategori) },
                     )
                 }
             }
@@ -203,6 +204,13 @@ fun TransactionListScreen(
                     contentAlignment = Alignment.Center,
                 ) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Icon(
+                            Icons.Outlined.Receipt,
+                            contentDescription = null,
+                            modifier = Modifier.size(64.dp),
+                            tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f),
+                        )
+                        Spacer(modifier = Modifier.height(KasSpacing.sm))
                         Text(
                             text = "Belum ada transaksi",
                             style = MaterialTheme.typography.titleLarge,

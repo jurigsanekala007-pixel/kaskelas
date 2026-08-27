@@ -13,7 +13,7 @@ feature priorities and acceptance criteria are defined there and must not be re-
 - **Architecture:** MVVM + **Hilt** DI, Room + Flow/StateFlow, Jetpack Compose, single Activity + Navigation Compose
 - **Source layout:**
   - `core/` — database, util (e.g. `Hasher`)
-  - `data/` — Room Entity + Dao + RepositoryImpl, mappers
+  - `data/` — Room Entity + Dao + RepositoryImpl, mappers (subpackages: `transaction/`, `category/`, `settings/`)
   - `domain/` — domain models, repository interfaces, `usecase/BalanceCalculator` (pure money logic — the only usecase; must be unit-tested)
   - `ui/` — Compose screens, ViewModels, theme
   - `di/` — Hilt modules
@@ -23,23 +23,42 @@ feature priorities and acceptance criteria are defined there and must not be re-
 
 ## Current state
 
-The project is past initial scaffolding. Debug APK builds and room/DAO code is present.
-Execution is still driven by the agreed phase plan below — do not add features out of band.
+All phases F0–F6 are complete. The project is production-ready (release APK builds,
+44 unit tests passing, zero TODO debt). Execution is driven by the agreed phase plan
+below — do not add features out of band.
 
-### Security (Lock feature — in progress)
+### Security (Lock feature — complete)
 
 - 4-digit PIN stored hashed via `androidx.security:security-crypto` + custom `Hasher`
 - Lock screen on app cold start; PIN keypad in `ui/lock/`
-- Wrong-PIN attempt delay implemented
+- Wrong-PIN attempt delay + `isVerifying` race-condition guard
 - Security-question reset flow (5 presets + free-text option, answer hashed)
-- Account setup flow for first run (set PIN + security question)
+- Account setup for first run (set PIN + security question)
 
-### Data layer (in progress)
+### Data layer (complete)
 
-- Room database `KasDatabase` with `TransactionDao`, `TransactionEntity`
+- Room database `KasDatabase` (v3) with `TransactionDao`, `TransactionEntity`
 - `TransactionRepositoryImpl` implementing the domain transaction repository interface
+- `CategoryRepository` / `CategoryDao` / `CategoryEntity` — DB-backed categories
+- `MIGRATION_2_3` seeds 8 default categories (4 MASUK + 4 KELUAR)
 - PIN/lock state stored via `androidx.datastore:preferences`
 - Database is seeded nothing by default — first-run data comes from the user
+
+### Features (all complete)
+
+- **Transaction CRUD**: add/edit/delete with confirmation dialog
+- **Transaction list**: search by description/category, date-range filter (DatePickerDialog)
+- **Category management**: DB-backed, settings screen to add/edit/delete categories
+- **Dashboard**: balance card, monthly in/out summary, last transaction
+- **Monthly reports**: month picker, totals, ending balance
+- **Settings**: change PIN, JSON backup/restore via SAF, app version
+- **Release hardening**: R8/minify (20.22 MB → 1.66 MB), conditional signing, ProGuard rules
+- **Compose Previews**: 20+ @Preview functions across 4 files for Android Studio preview
+
+### Tests (complete)
+
+- 44 unit tests: BalanceCalculator (5), TransactionDao (9), FormatRupiah (9), Converters (3), + others
+- Stack: JUnit 4 + Robolectric 4.16 + AndroidX Test Core + Coroutines Test + Turbine + Room Testing
 
 ## Dev environment (verified)
 

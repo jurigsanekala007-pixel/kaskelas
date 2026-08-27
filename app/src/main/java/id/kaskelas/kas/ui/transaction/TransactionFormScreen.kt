@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Backspace
@@ -24,6 +25,7 @@ import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -50,6 +52,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -58,7 +61,6 @@ import id.kaskelas.kas.ui.theme.CoralRed
 import id.kaskelas.kas.ui.theme.DeepBlue
 import id.kaskelas.kas.ui.theme.ForestGreen
 import id.kaskelas.kas.ui.theme.KasSpacing
-import id.kaskelas.kas.ui.theme.MidnightNavy
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -112,7 +114,7 @@ fun TransactionFormScreen(
                         else
                             "Tambah Transaksi",
                         fontWeight = FontWeight.Bold,
-                        color = MidnightNavy,
+                        color = MaterialTheme.colorScheme.onSurface,
                     )
                 },
                 navigationIcon = {
@@ -251,7 +253,7 @@ private fun TypeChip(
     else
         DeepBlue
 
-    androidx.compose.material3.FilterChip(
+    FilterChip(
         selected = isSelected,
         onClick = onClick,
         label = { Text(label) },
@@ -262,7 +264,7 @@ private fun TypeChip(
                 tint = contentColor,
             )
         },
-        colors = androidx.compose.material3.FilterChipDefaults.filterChipColors(
+        colors = FilterChipDefaults.filterChipColors(
             selectedContainerColor = color,
             selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
         ),
@@ -285,7 +287,7 @@ private fun AmountSection(
             text = if (type == TransactionType.MASUK) "Nominal Pemasukan" else "Nominal Pengeluaran",
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Bold,
-            color = MidnightNavy,
+            color = MaterialTheme.colorScheme.onSurface,
         )
         Spacer(modifier = Modifier.height(KasSpacing.sm))
         Row(
@@ -316,6 +318,7 @@ private fun AmountSection(
                     fontWeight = FontWeight.Bold,
                     color = color,
                 ),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 modifier = Modifier.weight(1f),
                 isError = !amount.isBlank() && amount.toLongOrNull() == null,
             )
@@ -344,7 +347,7 @@ private fun CategorySection(
             text = "Kategori",
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Bold,
-            color = MidnightNavy,
+            color = MaterialTheme.colorScheme.onSurface,
         )
         Spacer(modifier = Modifier.height(KasSpacing.sm))
         Row(
@@ -377,7 +380,7 @@ private fun DateSection(
             text = "Tanggal",
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Bold,
-            color = MidnightNavy,
+            color = MaterialTheme.colorScheme.onSurface,
         )
         Spacer(modifier = Modifier.height(KasSpacing.sm))
         OutlinedButton(

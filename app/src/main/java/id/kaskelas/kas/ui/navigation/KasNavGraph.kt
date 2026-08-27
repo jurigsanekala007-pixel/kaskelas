@@ -2,7 +2,11 @@ package id.kaskelas.kas.ui.navigation
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -55,20 +59,18 @@ fun KasNavGraph(navController: NavHostController = rememberNavController()) {
             navController = navController,
             startDestination = Routes.LOCK,
             modifier = Modifier.padding(padding),
-            enterTransition = {
-                slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Start, tween(250))
-            },
-            exitTransition = {
-                slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Start, tween(250))
-            },
-            popEnterTransition = {
-                slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.End, tween(250))
-            },
-            popExitTransition = {
-                slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.End, tween(250))
-            },
+            enterTransition = { fadeIn(tween(200)) },
+            exitTransition = { fadeOut(tween(200)) },
+            popEnterTransition = { fadeIn(tween(200)) },
+            popExitTransition = { fadeOut(tween(200)) },
         ) {
-            composable(Routes.LOCK) {
+            composable(
+                route = Routes.LOCK,
+                enterTransition = { EnterTransition.None },
+                exitTransition = { ExitTransition.None },
+                popEnterTransition = { EnterTransition.None },
+                popExitTransition = { ExitTransition.None },
+            ) {
                 LockScreen(onUnlocked = {
                     navController.navigate(Tab.BERANDA.route) {
                         popUpTo(Routes.LOCK) { inclusive = true }
@@ -106,6 +108,18 @@ fun KasNavGraph(navController: NavHostController = rememberNavController()) {
                         defaultValue = -1L
                     },
                 ),
+                enterTransition = {
+                    slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Start, tween(250))
+                },
+                exitTransition = {
+                    slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Start, tween(250))
+                },
+                popEnterTransition = {
+                    slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.End, tween(250))
+                },
+                popExitTransition = {
+                    slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.End, tween(250))
+                },
             ) { entry ->
                 val id = entry.arguments?.getLong("transactionId") ?: -1L
                 TransactionFormScreen(
@@ -119,6 +133,18 @@ fun KasNavGraph(navController: NavHostController = rememberNavController()) {
                 arguments = listOf(
                     navArgument("type") { type = NavType.StringType },
                 ),
+                enterTransition = {
+                    slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Start, tween(250))
+                },
+                exitTransition = {
+                    slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Start, tween(250))
+                },
+                popEnterTransition = {
+                    slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.End, tween(250))
+                },
+                popExitTransition = {
+                    slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.End, tween(250))
+                },
             ) {
                 CategoryManageScreen(
                     onBack = { navController.popBackStack() },

@@ -12,7 +12,7 @@ import androidx.navigation.NavHostController
 
 @Composable
 fun KasBottomBar(navController: NavHostController, currentRoute: String?) {
-    NavigationBar(containerColor = MaterialTheme.colorScheme.surface) {
+    NavigationBar(containerColor = MaterialTheme.colorScheme.background) {
         Tab.entries.forEach { tab ->
             val selected = currentRoute == tab.route
             NavigationBarItem(

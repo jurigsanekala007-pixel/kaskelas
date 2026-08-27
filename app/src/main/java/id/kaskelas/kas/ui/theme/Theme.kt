@@ -36,7 +36,11 @@ private val KasTypography = Typography(
     headlineLarge = TextStyle(fontWeight = FontWeight.Bold, fontSize = 34.sp),
     titleLarge = TextStyle(fontWeight = FontWeight.SemiBold, fontSize = 22.sp),
     titleMedium = TextStyle(fontWeight = FontWeight.SemiBold, fontSize = 16.sp),
+    bodyLarge = TextStyle(fontSize = 16.sp),
     bodyMedium = TextStyle(fontSize = 14.sp),
+    bodySmall = TextStyle(fontSize = 12.sp),
+    labelLarge = TextStyle(fontWeight = FontWeight.Medium, fontSize = 14.sp),
+    labelMedium = TextStyle(fontWeight = FontWeight.Medium, fontSize = 12.sp),
     labelSmall = TextStyle(fontWeight = FontWeight.Medium, fontSize = 11.sp),
 )
 

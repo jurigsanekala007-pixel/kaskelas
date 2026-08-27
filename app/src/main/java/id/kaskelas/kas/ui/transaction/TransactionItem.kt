@@ -145,7 +145,7 @@ fun TransactionItem(
                 Spacer(modifier = Modifier.width(KasSpacing.sm))
                 IconButton(
                     onClick = { onDelete(transaction.id) },
-                    modifier = Modifier.size(36.dp),
+                    modifier = Modifier.size(48.dp),
                 ) {
                     Icon(
                         Icons.Default.Delete,

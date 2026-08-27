@@ -9,11 +9,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.outlined.Category
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -37,11 +40,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import id.kaskelas.kas.ui.theme.CoralRed
 import id.kaskelas.kas.ui.theme.ForestGreen
 import id.kaskelas.kas.ui.theme.KasSpacing
-import id.kaskelas.kas.ui.theme.MidnightNavy
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -65,7 +68,7 @@ fun CategoryManageScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(title, fontWeight = FontWeight.Bold, color = MidnightNavy) },
+                title = { Text(title, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Kembali")
@@ -92,10 +95,17 @@ fun CategoryManageScreen(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
+                Icon(
+                    Icons.Outlined.Category,
+                    contentDescription = null,
+                    modifier = Modifier.size(64.dp),
+                    tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f),
+                )
+                Spacer(modifier = Modifier.height(KasSpacing.sm))
                 Text(
                     text = "Belum ada kategori",
                     style = MaterialTheme.typography.titleLarge,
-                    color = MidnightNavy.copy(alpha = 0.5f),
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
                 )
             }
         } else {
@@ -109,6 +119,7 @@ fun CategoryManageScreen(
                 items(state.categories, key = { it.id }) { category ->
                     Card(
                         modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(16.dp),
                         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                     ) {
                         Row(
@@ -121,13 +132,13 @@ fun CategoryManageScreen(
                                 Text(
                                     text = category.name,
                                     style = MaterialTheme.typography.titleMedium,
-                                    color = MidnightNavy,
+                                    color = MaterialTheme.colorScheme.onSurface,
                                 )
                                 if (category.isDefault) {
                                     Text(
                                         text = "Default",
                                         style = MaterialTheme.typography.bodySmall,
-                                        color = MidnightNavy.copy(alpha = 0.5f),
+                                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
                                     )
                                 }
                             }

@@ -1,5 +1,8 @@
 package id.kaskelas.kas.ui.report
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,6 +28,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -33,13 +37,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import id.kaskelas.kas.domain.model.TransactionType
 import id.kaskelas.kas.formatRupiah
 import id.kaskelas.kas.ui.theme.AmberGold
-import id.kaskelas.kas.ui.theme.CloudGray
+import id.kaskelas.kas.ui.theme.BoneWhite
 import id.kaskelas.kas.ui.theme.CoralRed
 import id.kaskelas.kas.ui.theme.ForestGreen
 import id.kaskelas.kas.ui.theme.KasSpacing
@@ -58,10 +64,12 @@ fun ReportScreen(
     val state by viewModel.uiState.collectAsState()
 
     if (state.isLoading) {
-        Box(
-            modifier = modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center,
-        ) { CircularProgressIndicator() }
+        AnimatedVisibility(visible = true, enter = fadeIn(), exit = fadeOut()) {
+            Box(
+                modifier = modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center,
+            ) { CircularProgressIndicator() }
+        }
         return
     }
 
@@ -74,7 +82,7 @@ fun ReportScreen(
             Text(
                 text = "Laporan",
                 style = MaterialTheme.typography.headlineLarge,
-                color = MidnightNavy,
+                color = MaterialTheme.colorScheme.onSurface,
             )
             Spacer(modifier = Modifier.height(KasSpacing.lg))
             EmptyReport()
@@ -92,7 +100,7 @@ fun ReportScreen(
             Text(
                 text = "Laporan",
                 style = MaterialTheme.typography.headlineLarge,
-                color = MidnightNavy,
+                color = MaterialTheme.colorScheme.onSurface,
             )
             Spacer(modifier = Modifier.height(KasSpacing.lg))
         }
@@ -119,7 +127,7 @@ fun ReportScreen(
                 text = "Transaksi Bulan Ini (${state.transactions.size})",
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.SemiBold,
-                color = MidnightNavy,
+                color = MaterialTheme.colorScheme.onSurface,
             )
             Spacer(modifier = Modifier.height(KasSpacing.sm))
         }
@@ -129,12 +137,12 @@ fun ReportScreen(
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(16.dp),
-                    colors = CardDefaults.cardColors(containerColor = CloudGray),
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                 ) {
                     Text(
                         text = "Tidak ada transaksi di bulan ini.",
                         style = MaterialTheme.typography.bodyMedium,
-                        color = MidnightNavy.copy(alpha = 0.6f),
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
                         modifier = Modifier.padding(KasSpacing.md),
                     )
                 }
@@ -152,12 +160,12 @@ private fun EmptyReport() {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = CloudGray),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
     ) {
         Text(
             text = "Belum ada data untuk dilaporkan.\nCatat transaksi lewat tab Transaksi.",
             style = MaterialTheme.typography.bodyMedium,
-            color = MidnightNavy.copy(alpha = 0.6f),
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
             modifier = Modifier.padding(KasSpacing.md),
         )
     }
@@ -187,7 +195,7 @@ private fun MonthSelector(
             Text(
                 text = selectedMonth.format(monthFormatter).replaceFirstChar { it.uppercase() },
                 fontWeight = FontWeight.SemiBold,
-                color = MidnightNavy,
+                color = MaterialTheme.colorScheme.onSurface,
             )
         }
         IconButton(onClick = onNext) {
@@ -200,7 +208,7 @@ private fun MonthSelector(
         Card(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(16.dp),
-            colors = CardDefaults.cardColors(containerColor = CloudGray),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         ) {
             Column(modifier = Modifier.padding(KasSpacing.sm)) {
                 availableMonths.forEach { month ->
@@ -216,13 +224,13 @@ private fun MonthSelector(
 
 @Composable
 private fun MonthTextButton(month: YearMonth, selected: Boolean, onClick: () -> Unit) {
-    androidx.compose.material3.TextButton(
+    TextButton(
         onClick = onClick,
         modifier = Modifier.fillMaxWidth(),
     ) {
         Text(
             text = month.format(monthFormatter).replaceFirstChar { it.uppercase() },
-            color = if (selected) AmberGold else MidnightNavy,
+            color = if (selected) AmberGold else MaterialTheme.colorScheme.onSurface,
             fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal,
         )
     }
@@ -248,14 +256,14 @@ private fun SummaryCard(
             Text(
                 text = "Saldo Akhir",
                 style = MaterialTheme.typography.bodyMedium,
-                color = id.kaskelas.kas.ui.theme.BoneWhite.copy(alpha = 0.8f),
+                color = BoneWhite.copy(alpha = 0.8f),
             )
             Spacer(modifier = Modifier.height(KasSpacing.xs))
             Text(
                 text = formatRupiah(endingBalance),
                 style = MaterialTheme.typography.headlineLarge,
                 fontWeight = FontWeight.Bold,
-                color = if (endingBalance < 0) CoralRed else id.kaskelas.kas.ui.theme.BoneWhite,
+                color = if (endingBalance < 0) CoralRed else BoneWhite,
             )
         }
     }
@@ -280,13 +288,13 @@ private fun SummaryCard(
 private fun MiniSummary(
     label: String,
     amount: Long,
-    color: androidx.compose.ui.graphics.Color,
+    color: Color,
     modifier: Modifier = Modifier,
 ) {
     Card(
         modifier = modifier,
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = CloudGray),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
     ) {
         Column(
             modifier = Modifier
@@ -296,7 +304,7 @@ private fun MiniSummary(
             Text(
                 text = label,
                 style = MaterialTheme.typography.labelSmall,
-                color = MidnightNavy.copy(alpha = 0.7f),
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
             )
             Spacer(modifier = Modifier.height(KasSpacing.xs))
             Text(
@@ -314,7 +322,7 @@ private fun ReportTransactionRow(transaction: id.kaskelas.kas.domain.model.Trans
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = CloudGray),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
     ) {
         Row(
             modifier = Modifier
@@ -325,7 +333,7 @@ private fun ReportTransactionRow(transaction: id.kaskelas.kas.domain.model.Trans
             Text(
                 text = transaction.date.format(dayFormatter),
                 style = MaterialTheme.typography.labelSmall,
-                color = MidnightNavy.copy(alpha = 0.6f),
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
                 modifier = Modifier.padding(end = KasSpacing.md),
             )
             Column(modifier = Modifier.weight(1f)) {
@@ -333,15 +341,15 @@ private fun ReportTransactionRow(transaction: id.kaskelas.kas.domain.model.Trans
                     text = transaction.category,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.SemiBold,
-                    color = MidnightNavy,
+                    color = MaterialTheme.colorScheme.onSurface,
                 )
                 transaction.note.takeIf { it.isNotBlank() }?.let { note ->
                     Text(
                         text = note,
                         style = MaterialTheme.typography.bodyMedium,
-                        color = MidnightNavy.copy(alpha = 0.6f),
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
                         maxLines = 1,
-                        overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+                        overflow = TextOverflow.Ellipsis,
                     )
                 }
             }

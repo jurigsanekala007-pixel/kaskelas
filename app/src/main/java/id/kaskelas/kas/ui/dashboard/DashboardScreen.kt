@@ -1,5 +1,8 @@
 package id.kaskelas.kas.ui.dashboard
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,7 +31,6 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import id.kaskelas.kas.domain.model.TransactionType
 import id.kaskelas.kas.formatRupiah
 import id.kaskelas.kas.ui.theme.BoneWhite
-import id.kaskelas.kas.ui.theme.CloudGray
 import id.kaskelas.kas.ui.theme.CoralRed
 import id.kaskelas.kas.ui.theme.ForestGreen
 import id.kaskelas.kas.ui.theme.KasSpacing
@@ -56,17 +58,19 @@ fun DashboardScreen(
         Text(
             text = "Beranda",
             style = MaterialTheme.typography.headlineLarge,
-            color = MidnightNavy,
+            color = MaterialTheme.colorScheme.onSurface,
         )
         Spacer(modifier = Modifier.height(KasSpacing.lg))
 
         when {
             state.isLoading -> {
-                Box(
-                    modifier = Modifier.fillMaxWidth().height(200.dp),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    CircularProgressIndicator()
+                AnimatedVisibility(visible = state.isLoading, enter = fadeIn(), exit = fadeOut()) {
+                    Box(
+                        modifier = Modifier.fillMaxWidth().height(200.dp),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        CircularProgressIndicator()
+                    }
                 }
             }
             else -> {
@@ -149,7 +153,7 @@ private fun SummaryCard(
     Card(
         modifier = modifier,
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = CloudGray),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
     ) {
         Column(
             modifier = Modifier
@@ -159,7 +163,7 @@ private fun SummaryCard(
             Text(
                 text = title,
                 style = MaterialTheme.typography.labelSmall,
-                color = MidnightNavy.copy(alpha = 0.7f),
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
             )
             Spacer(modifier = Modifier.height(KasSpacing.xs))
             Text(
@@ -179,19 +183,19 @@ private fun LastTransactionCard(transaction: id.kaskelas.kas.domain.model.Transa
             text = "Transaksi Terakhir",
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.SemiBold,
-            color = MidnightNavy,
+            color = MaterialTheme.colorScheme.onSurface,
         )
         Spacer(modifier = Modifier.height(KasSpacing.sm))
         if (transaction == null) {
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp),
-                colors = CardDefaults.cardColors(containerColor = CloudGray),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
             ) {
                 Text(
                     text = "Belum ada transaksi.\nTekan tab Transaksi untuk mulai mencatat.",
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MidnightNavy.copy(alpha = 0.6f),
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
                     modifier = Modifier.padding(KasSpacing.md),
                 )
             }
@@ -199,7 +203,7 @@ private fun LastTransactionCard(transaction: id.kaskelas.kas.domain.model.Transa
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp),
-                colors = CardDefaults.cardColors(containerColor = CloudGray),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
             ) {
                 Column(
                     modifier = Modifier
@@ -214,7 +218,7 @@ private fun LastTransactionCard(transaction: id.kaskelas.kas.domain.model.Transa
                             text = transaction.category,
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.SemiBold,
-                            color = MidnightNavy,
+                            color = MaterialTheme.colorScheme.onSurface,
                         )
                         val prefix = if (transaction.type == TransactionType.MASUK) "+" else "−"
                         val color =
@@ -231,14 +235,14 @@ private fun LastTransactionCard(transaction: id.kaskelas.kas.domain.model.Transa
                         Text(
                             text = note,
                             style = MaterialTheme.typography.bodyMedium,
-                            color = MidnightNavy.copy(alpha = 0.7f),
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
                         )
                     }
                     Spacer(modifier = Modifier.height(KasSpacing.xs))
                     Text(
                         text = transaction.date.format(fullDateFormatter),
                         style = MaterialTheme.typography.labelSmall,
-                        color = MidnightNavy.copy(alpha = 0.5f),
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
                     )
                 }
             }
